@@ -90,7 +90,7 @@ def delete_booking(request, booking_id):
 
 @login_required
 def edit_booking(request, booking_id):
-    """Edit booking via POST (AJAX)"""
+    """Edit booking via POST"""
     booking = get_object_or_404(Booking, id=booking_id, user=request.user)
     if request.method == 'POST':
         booking.name = request.POST['name']
