@@ -21,13 +21,13 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'table_booking',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'table_booking',  # Custom app for table bookings
 ]
 
 MIDDLEWARE = [
@@ -107,6 +107,11 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = 'static/'
+
+# Include your root-level static folder
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+]
 
 #  login url  then redirect to dashboard
 LOGIN_URL = 'login'  
