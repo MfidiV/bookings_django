@@ -49,3 +49,6 @@ class RegisterForm(forms.ModelForm):
         if password and confirm and password != confirm:
             raise ValidationError("Passwords do not match!")
         return cleaned_data
+
+class ForgotPasswordForm(forms.Form):
+    email = forms.EmailField(label="Your email", max_length=254)

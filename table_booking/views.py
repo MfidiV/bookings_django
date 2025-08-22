@@ -4,11 +4,17 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.http import JsonResponse
 from .models import Booking
-from .forms import RegisterForm
+from .forms import RegisterForm, ForgotPasswordForm
+import secrets
+from django.core.mail import send_mail
 
 # ------------------------------
 # --- AUTHENTICATION VIEWS ---
 # ------------------------------
+
+
+# Temporary in-memory token store (for demo; use DB in production)
+TOKENS = {}
 
 def register(request):
     """
@@ -45,6 +51,34 @@ def login_view(request):
             return redirect('dashboard')
         messages.error(request, "Invalid username or password.")
     return render(request, 'login.html')
+
+def forgot_password(request):
+    if request.method == "POST":
+        form = ForgotPasswordForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data['email']
+
+            # Generate a secure token
+            token = secrets.token_urlsafe(20)
+            TOKENS[token] = email  # Store token temporarily
+
+            reset_link = f"http://localhost:8000/reset-password/{token}/"
+
+            # Send email via MailHog
+            send_mail(
+                'Reset Your Password',
+                f'Click this link to reset your password: {reset_link}',
+                'noreply@example.com',
+                [email],
+                fail_silently=False,
+            )
+
+            messages.success(request, 'Forgot password email sent! Check MailHog UI.')
+            return redirect('forgot_password')
+    else:
+        form = ForgotPasswordForm()
+
+    return render(request, 'forgot_password.html', {'form': form})
 
 
 def logout_view(request):
