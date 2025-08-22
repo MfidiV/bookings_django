@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.contrib import messages
 from django.http import JsonResponse
 from .models import Booking
@@ -52,6 +53,9 @@ def login_view(request):
         messages.error(request, "Invalid username or password.")
     return render(request, 'login.html')
 
+# Temporary in-memory token store (for demo; use DB in production)
+TOKENS = {}
+
 def forgot_password(request):
     if request.method == "POST":
         form = ForgotPasswordForm(request.POST)
@@ -60,26 +64,32 @@ def forgot_password(request):
 
             # Generate a secure token
             token = secrets.token_urlsafe(20)
-            TOKENS[token] = email  # Store token temporarily
 
-            reset_link = f"http://localhost:8000/reset-password/{token}/"
+            # Check if user exists
+            try:
+                user = User.objects.get(email=email)
+                # Store token temporarily
+                TOKENS[token] = user.id  
 
-            # Send email via MailHog
-            send_mail(
-                'Reset Your Password',
-                f'Click this link to reset your password: {reset_link}',
-                'noreply@example.com',
-                [email],
-                fail_silently=False,
-            )
+                # Construct reset link
+                reset_link = f"http://localhost:8000/reset-password/{token}/"
 
-            messages.success(request, 'Forgot password email sent! Check MailHog UI.')
+                # Send email via MailHog
+                send_mail(
+                    'Reset Your Password',
+                    f'Click this link to reset your password: {reset_link}',
+                    'noreply@example.com',
+                    [email],
+                    fail_silently=False,
+                )
+                messages.success(request, "Forgot password email sent!")
+            except User.DoesNotExist:
+               messages.error(request, "Email not found")
             return redirect('forgot_password')
     else:
         form = ForgotPasswordForm()
 
     return render(request, 'forgot_password.html', {'form': form})
-
 
 def logout_view(request):
     """Logout user and redirect to login page"""
