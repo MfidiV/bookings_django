@@ -51,12 +51,13 @@ with col2:
 
 # --- Gunicorn Logs ---
 st.subheader("🐍 Gunicorn Logs")
-gunicorn_log = "/var/log/gunicorn.log"  # adjust path if needed
+gunicorn_log = "/var/log/gunicorn/error.log"  # or access.log
 if os.path.exists(gunicorn_log):
     with open(gunicorn_log) as f:
-        st.text("".join(f.readlines()[-15:]))
+        st.text("".join(f.readlines()[-8:]))
 else:
-    st.warning("Gunicorn log file not found. Run gunicorn with --access-logfile.")
+    st.warning("Gunicorn log file not found.")
+
 
 # --- Nginx Access Logs ---
 st.subheader("🌐 Nginx Access Logs")
