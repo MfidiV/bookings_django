@@ -123,6 +123,9 @@ STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
 
+STATIC_ROOT = BASE_DIR / "staticfiles"  # where collectstatic will dump everything
+
+
 #  login url  then redirect to dashboard
 LOGIN_URL = 'login'  
 LOGIN_REDIRECT_URL = 'dashboard'  
