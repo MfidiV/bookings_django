@@ -30,13 +30,38 @@ It demonstrates incremental development:
 - **Email Testing:** MailHog (local SMTP testing)
 - **Version Control:** Git + GitHub
 
-## Clone the Project
+## Clone & Setup the Project
 
-To get a copy of this project locally, run:
+Run the following commands in your terminal to set up the project:
 
-```
+```bash
+# Clone the repository
 git clone https://github.com/<your-username>/<repository-name>.git
 cd <repository-name>
+
+# Create and activate a virtual environment
+python -m venv venv
+
+# Linux / macOS
+source venv/bin/activate
+
+# Windows
+# venv\Scripts\activate
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Apply database migrations
+python manage.py migrate
+
+# Create a superuser (optional, for admin access)
+python manage.py createsuperuser
+
+# Run the development server
+python manage.py runserver
+
+# Open the app in your browser at
+# http://127.0.0.1:8000/
 ```
 
 **Usage**
