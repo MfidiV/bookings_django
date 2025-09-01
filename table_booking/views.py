@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from django.http import JsonResponse
 from .models import Booking
-from .forms import RegisterForm, ForgotPasswordForm
+from .forms import RegisterForm, ForgotPasswordForm, LoginForm
 import secrets
 from django.core.mail import send_mail
 
@@ -39,19 +39,23 @@ def register(request):
 
 def login_view(request):
     """
-    Handle user login:
-    - POST: authenticate and login, redirect to dashboard
-    - GET / failed login: render login page with error
+    Handle login using LoginForm.
     """
     if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
-        user = authenticate(request, username=username, password=password)
-        if user:
-            login(request, user)
-            return redirect('dashboard')
-        messages.error(request, "Invalid username or password.")
-    return render(request, 'login.html')
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+            user = authenticate(request, username=username, password=password)
+            if user:
+                login(request, user)
+                return redirect('dashboard')
+            messages.error(request, "Invalid username or password.")
+    else:
+        form = LoginForm()
+    
+    return render(request, 'login.html', {'form': form})
+
 
 # Temporary in-memory token store (for demo; use DB in production)
 TOKENS = {}

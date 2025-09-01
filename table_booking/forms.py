@@ -50,5 +50,12 @@ class RegisterForm(forms.ModelForm):
             raise ValidationError("Passwords do not match!")
         return cleaned_data
 
+#Login form
+class LoginForm(forms.Form):
+    username = forms.EmailField(widget=forms.EmailInput(attrs={'class': 'form-control'}))
+    password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control'}))
+
+
+
 class ForgotPasswordForm(forms.Form):
     email = forms.EmailField(label="Your email", max_length=254)
