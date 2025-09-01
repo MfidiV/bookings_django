@@ -8,10 +8,10 @@ st.set_page_config(page_title="Server Monitor", layout="wide")
 
 st.title("Server Monitoring")
 
-# Sidebar refresh control
-refresh_rate = st.sidebar.slider("⏱ Refresh every (seconds)", 2,5, 60, 10)
+# Sidebar refresh control, allows the user to select how often metrics refresh
+refresh_rate = st.sidebar.slider("Refresh every (seconds)",5,5, 60, 10)
 
-# Initialize session state for storing historical metrics
+# Initialize session state for storing historical metrics across app reruns
 if "metrics" not in st.session_state:
     st.session_state.metrics = pd.DataFrame(columns=["Time", "CPU", "Memory", "Disk", "NetSent"])
 
@@ -40,8 +40,8 @@ with col3:
 with col4:
     st.metric("Network Sent (MB)", f"{net_sent:.2f}")
 
-# --- Charts for Trends ---
-st.subheader("📈 Resource Usage Trends")
+# --- Ploting the charts for Trends ---
+st.subheader("Resource Usage Trends")
 
 col1, col2 = st.columns(2)
 with col1:
@@ -49,8 +49,8 @@ with col1:
 with col2:
     st.line_chart(st.session_state.metrics.set_index("Time")[["Disk", "NetSent"]])
 
-# --- Gunicorn Logs ---
-st.subheader("🐍 Gunicorn Logs")
+# --- Gunicorn Logsfor errors and warning on my app ---
+st.subheader("Gunicorn Logs")
 gunicorn_log = "/var/log/gunicorn/error.log"  # or access.log
 if os.path.exists(gunicorn_log):
     with open(gunicorn_log) as f:
@@ -60,7 +60,7 @@ else:
 
 
 # --- Nginx Access Logs ---
-st.subheader("🌐 Nginx Access Logs")
+st.subheader("Nginx Access Logs")
 nginx_log = "/var/log/nginx/access.log"
 if os.path.exists(nginx_log):
     with open(nginx_log) as f:
@@ -69,7 +69,7 @@ else:
     st.warning("Nginx access log not found.")
 
 # --- Nginx Error Logs ---
-st.subheader("🚨 Nginx Error Logs")
+st.subheader("Nginx Error Logs")
 nginx_error = "/var/log/nginx/error.log"
 if os.path.exists(nginx_error):
     with open(nginx_error) as f:

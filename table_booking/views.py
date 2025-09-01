@@ -144,3 +144,15 @@ def edit_booking(request, booking_id):
         booking.save()
         return JsonResponse({'status': 'success'})
     return JsonResponse({'status': 'failed'})
+
+
+##########
+#A test view to trigger an error for monitoring purposes
+
+
+# # views.py
+# from django.http import HttpResponse
+
+# def test_error(request):
+#     1 / 0  # This will raise a ZeroDivisionError
+#     return HttpResponse("This won't run")
